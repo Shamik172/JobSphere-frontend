@@ -13,15 +13,6 @@ export const AuthProvider = ({ children }) => {
   const verifyAuth = async () => {
     try {
       // First, try to verify as an interviewer
-      const interviewerRes = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/interviewer/verify`, {
-        withCredentials: true,
-      });
-      if (interviewerRes.data.loggedIn) {
-        setUser(interviewerRes.data.user);
-        setLoading(false);
-        return;
-      }
-
       // If not an interviewer, try to verify as a candidate
       const candidateRes = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/candidate/verify`, {
         withCredentials: true,
@@ -31,6 +22,16 @@ export const AuthProvider = ({ children }) => {
         setLoading(false);
         return;
       }
+      
+      const interviewerRes = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/interviewer/verify`, {
+        withCredentials: true,
+      });
+      if (interviewerRes.data.loggedIn) {
+        setUser(interviewerRes.data.user);
+        setLoading(false);
+        return;
+      }
+
 
       setUser(null);
     } catch (err) {
