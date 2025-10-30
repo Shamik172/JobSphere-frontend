@@ -18,7 +18,7 @@ export default function Footer() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!feedback.trim() || rating === 0) return;
-    console.log("Feedback submitted:", { feedback, rating });
+    // console.log("Feedback submitted:", { feedback, rating });
     setSubmitted(true);
     setFeedback("");
     setRating(0);

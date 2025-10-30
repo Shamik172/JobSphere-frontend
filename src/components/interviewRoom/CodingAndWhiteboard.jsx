@@ -21,7 +21,7 @@ const CodingAndWhiteboard = () => {
 
   const handleMinimizeToggle = () => {
     setIsMinimized(!isMinimized);
-    console.log("Minimize toggled:", isMinimized);
+    // console.log("Minimize toggled:", isMinimized);
   };
 
   return (

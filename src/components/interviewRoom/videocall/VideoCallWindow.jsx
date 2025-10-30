@@ -51,21 +51,21 @@ export default function VideoCallWindow({ roomId, userId, isMiniVideoCallWindow 
     if (socket && socket.id) {
       setSocketId(socket.id);
       socketIdRef.current = socket.id;
-      console.log("Current socket ID:", socket.id);
+      // console.log("Current socket ID:", socket.id);
     }
   }, []);
 
   // Keep hostId ref updated
   useEffect(() => {
     hostIdRef.current = hostId;
-    console.log(`Host ID updated: ${hostId}`);
+    // console.log(`Host ID updated: ${hostId}`);
   }, [hostId]);
 
   // Track connection status changes
   useEffect(() => {
     const statusEntries = Object.entries(connectionStatus);
     if (statusEntries.length > 0) {
-      console.log("Connection status updated:",
+        console.log("Connection status updated:",
         statusEntries.map(([id, status]) => `${id}: ${status}`).join(', ')
       );
     }
@@ -121,7 +121,7 @@ export default function VideoCallWindow({ roomId, userId, isMiniVideoCallWindow 
 
     // Set up connection state monitoring
     pc.onconnectionstatechange = () => {
-      console.log(`Peer ${targetSocketId} connection state: ${pc.connectionState}`);
+      // console.log(`Peer ${targetSocketId} connection state: ${pc.connectionState}`);
       setConnectionStatus(prev => ({
         ...prev,
         [targetSocketId]: pc.connectionState
@@ -138,7 +138,7 @@ export default function VideoCallWindow({ roomId, userId, isMiniVideoCallWindow 
         reconnectTimeoutsRef.current[targetSocketId] = setTimeout(() => {
           // Only attempt reconnect if socket is still connected
           if (socketConnectedRef.current && !isHost && hostId === targetSocketId) {
-            console.log(`Attempting to reconnect to host ${targetSocketId}...`);
+            // console.log(`Attempting to reconnect to host ${targetSocketId}...`);
             cleanupPeerConnection(targetSocketId);
             createPeerConnection(targetSocketId, true);
           }
@@ -155,7 +155,7 @@ export default function VideoCallWindow({ roomId, userId, isMiniVideoCallWindow 
       return null;
     }
 
-    console.log(`Creating ${initiator ? 'initiator' : 'receiver'} peer connection to ${targetSocketId}`);
+    // console.log(`Creating ${initiator ? 'initiator' : 'receiver'} peer connection to ${targetSocketId}`);
 
     // Check if we already have a connection
     let pc = peersRef.current[targetSocketId];
@@ -179,7 +179,7 @@ export default function VideoCallWindow({ roomId, userId, isMiniVideoCallWindow 
       try {
         localStreamRef.current.getTracks().forEach(track => {
           pc.addTrack(track, localStreamRef.current);
-          console.log(`Added local ${track.kind} track to peer ${targetSocketId}`);
+          // console.log(`Added local ${track.kind} track to peer ${targetSocketId}`);
         });
       } catch (e) {
         console.warn(`Failed to add tracks to connection with ${targetSocketId}:`, e);
@@ -215,14 +215,14 @@ export default function VideoCallWindow({ roomId, userId, isMiniVideoCallWindow 
     // Set up negotiation handling
     pc.onnegotiationneeded = async () => {
       if (pc.signalingState !== "stable" || negotiationLock.current[targetSocketId]) {
-        console.log(`Skipping negotiation with ${targetSocketId} - busy or unstable`);
+        // console.log(`Skipping negotiation with ${targetSocketId} - busy or unstable`);
         return;
       }
 
       if (initiator || isHost) {
         try {
           negotiationLock.current[targetSocketId] = true;
-          console.log(`Creating offer for ${targetSocketId}`);
+          // console.log(`Creating offer for ${targetSocketId}`);
 
           const offer = await pc.createOffer();
           await pc.setLocalDescription(offer);
@@ -248,11 +248,11 @@ export default function VideoCallWindow({ roomId, userId, isMiniVideoCallWindow 
 
     // Debug helpers
     pc.oniceconnectionstatechange = () => {
-      console.log(`ICE connection state with ${targetSocketId}: ${pc.iceConnectionState}`);
+      // console.log(`ICE connection state with ${targetSocketId}: ${pc.iceConnectionState}`);
     };
 
     pc.onsignalingstatechange = () => {
-      console.log(`Signaling state with ${targetSocketId}: ${pc.signalingState}`);
+      // console.log(`Signaling state with ${targetSocketId}: ${pc.signalingState}`);
     };
 
     // Store and return the new connection
@@ -276,7 +276,7 @@ export default function VideoCallWindow({ roomId, userId, isMiniVideoCallWindow 
         // Close the connection
         pc.close();
 
-        console.log(`Closed peer connection with ${socketId}`);
+        // console.log(`Closed peer connection with ${socketId}`);
       } catch (e) {
         console.warn(`Error closing connection with ${socketId}:`, e);
       }
@@ -320,7 +320,7 @@ export default function VideoCallWindow({ roomId, userId, isMiniVideoCallWindow 
     const candidates = pendingCandidatesRef.current[socketId];
 
     if (pc && candidates && candidates.length) {
-      console.log(`Processing ${candidates.length} queued ICE candidates for ${socketId}`);
+      // console.log(`Processing ${candidates.length} queued ICE candidates for ${socketId}`);
 
       // Process in a stable state if possible
       if (pc.remoteDescription && pc.remoteDescription.type) {
@@ -335,7 +335,7 @@ export default function VideoCallWindow({ roomId, userId, isMiniVideoCallWindow 
         // Clear processed candidates
         delete pendingCandidatesRef.current[socketId];
       } else {
-        console.log(`Keeping ICE candidates queued for ${socketId} - no remote description yet`);
+        // console.log(`Keeping ICE candidates queued for ${socketId} - no remote description yet`);
       }
     }
   }, []);
@@ -351,11 +351,11 @@ export default function VideoCallWindow({ roomId, userId, isMiniVideoCallWindow 
     socketConnectedRef.current = true;
     setSocketId(socket.id);
     socketIdRef.current = socket.id;
-    console.log("Socket connected with ID:", socket.id);
+    // console.log("Socket connected with ID:", socket.id);
 
     // Socket event handlers
     const handleHostAssigned = ({ isHost: assigned }) => {
-      console.log(`You are assigned as host: ${assigned}`);
+      // console.log(`You are assigned as host: ${assigned}`);
       setIsHost(assigned);
 
       if (assigned) {
@@ -365,7 +365,7 @@ export default function VideoCallWindow({ roomId, userId, isMiniVideoCallWindow 
     };
 
     const handleHostInfo = ({ hostId: receivedHostId }) => {
-      console.log(`Received host info: ${receivedHostId}`);
+      // console.log(`Received host info: ${receivedHostId}`);
 
       setHostId(receivedHostId);
       hostIdRef.current = receivedHostId;
@@ -374,17 +374,17 @@ export default function VideoCallWindow({ roomId, userId, isMiniVideoCallWindow 
       // If we're a guest and this is the host, establish a connection
       // But prevent self-connection
       if (!isHost && socket.id !== receivedHostId && !peersRef.current[receivedHostId]) {
-        console.log(`Creating connection to host ${receivedHostId}`);
+        // console.log(`Creating connection to host ${receivedHostId}`);
         createPeerConnection(receivedHostId, true); // Guest initiates with host
       }
     };
 
     const handleExistingUsers = async (existingSocketIds) => {
-      console.log(`Received existing users: ${existingSocketIds.join(', ')}`);
+      // console.log(`Received existing users: ${existingSocketIds.join(', ')}`);
 
       // Filter out our own ID to prevent self-connections
       const filteredIds = existingSocketIds.filter(id => id !== socket.id);
-      console.log(`Filtered existing users (excluding self): ${filteredIds.join(', ')}`);
+      // console.log(`Filtered existing users (excluding self): ${filteredIds.join(', ')}`);
 
       // Skip if we're the host - guests will connect to us
       if (isHost) return;
@@ -401,7 +401,7 @@ export default function VideoCallWindow({ roomId, userId, isMiniVideoCallWindow 
     };
 
     const handleUserConnected = (otherSocketId) => {
-      console.log(`User connected: ${otherSocketId}`);
+      // console.log(`User connected: ${otherSocketId}`);
 
       // Prevent self-connection
       if (otherSocketId === socket.id) {
@@ -417,7 +417,7 @@ export default function VideoCallWindow({ roomId, userId, isMiniVideoCallWindow 
     };
 
     const handleReceiveOffer = async ({ from, sdp }) => {
-      console.log(`Received offer from: ${from}`);
+      // console.log(`Received offer from: ${from}`);
 
       // Prevent self-offers
       if (from === socket.id) {
@@ -431,7 +431,7 @@ export default function VideoCallWindow({ roomId, userId, isMiniVideoCallWindow 
 
       // Reject duplicate offers with same fingerprint
       if (pc && pc.lastOfferFingerprint === sdpFingerprint) {
-        console.log(`Ignoring duplicate offer from ${from}`);
+        // console.log(`Ignoring duplicate offer from ${from}`);
         return;
       }
 
@@ -465,7 +465,7 @@ export default function VideoCallWindow({ roomId, userId, isMiniVideoCallWindow 
 
         try {
           await peerConnection.setRemoteDescription(new RTCSessionDescription(sdp));
-          console.log(`Set remote offer from ${from}`);
+          // console.log(`Set remote offer from ${from}`);
 
           // Process any queued ICE candidates
           await processIceCandidates(from);
@@ -479,7 +479,7 @@ export default function VideoCallWindow({ roomId, userId, isMiniVideoCallWindow 
           peerConnection.lastAnswerFingerprint = answerFingerprint;
 
           socket.emit("answer", { to: from, sdp: answer });
-          console.log(`Sent answer to ${from}`);
+          // console.log(`Sent answer to ${from}`);
         } finally {
           // Release lock after a delay to prevent rapid renegotiation
           setTimeout(() => {
@@ -496,7 +496,7 @@ export default function VideoCallWindow({ roomId, userId, isMiniVideoCallWindow 
     };
 
     const handleReceiveAnswer = async ({ from, sdp }) => {
-      console.log(`Received answer from: ${from}`);
+      // console.log(`Received answer from: ${from}`);
 
       // Prevent self-answers
       if (from === socket.id) {
@@ -515,7 +515,7 @@ export default function VideoCallWindow({ roomId, userId, isMiniVideoCallWindow 
       }
 
       if (pc.lastAnswerFingerprint === sdpFingerprint) {
-        console.log(`Ignoring duplicate answer from ${from}`);
+        // console.log(`Ignoring duplicate answer from ${from}`);
         return;
       }
 
@@ -528,7 +528,7 @@ export default function VideoCallWindow({ roomId, userId, isMiniVideoCallWindow 
 
         // If we're in stable state, we might have already applied this answer
         if (pc.signalingState === "stable") {
-          console.log(`Connection with ${from} already stable, ignoring answer`);
+          // console.log(`Connection with ${from} already stable, ignoring answer`);
           return;
         }
 
@@ -541,7 +541,7 @@ export default function VideoCallWindow({ roomId, userId, isMiniVideoCallWindow 
       try {
         // Apply the answer
         await pc.setRemoteDescription(new RTCSessionDescription(sdp));
-        console.log(`Successfully set remote answer from ${from}`);
+        // console.log(`Successfully set remote answer from ${from}`);
 
         // Process any pending ICE candidates now
         await processIceCandidates(from);
@@ -555,7 +555,7 @@ export default function VideoCallWindow({ roomId, userId, isMiniVideoCallWindow 
     };
 
     const handleIceCandidate = async ({ from, candidate }) => {
-      console.log(`Received ICE candidate from: ${from}`);
+      // console.log(`Received ICE candidate from: ${from}`);
 
       // Prevent self-ICE candidates
       if (from === socket.id) {
@@ -588,14 +588,14 @@ export default function VideoCallWindow({ roomId, userId, isMiniVideoCallWindow 
     };
 
     const handleUserDisconnected = (otherSocketId) => {
-      console.log(`User disconnected: ${otherSocketId}`);
+      // console.log(`User disconnected: ${otherSocketId}`);
 
       // Clean up connection
       cleanupPeerConnection(otherSocketId);
 
       // If the host disconnected and we're still here, wait for new host assignment
       if (otherSocketId === hostIdRef.current && !isHost) {
-        console.log("Host disconnected, waiting for new host assignment");
+        // console.log("Host disconnected, waiting for new host assignment");
         setHostId(null);
         hostIdRef.current = null;
       }
@@ -613,20 +613,20 @@ export default function VideoCallWindow({ roomId, userId, isMiniVideoCallWindow 
 
     // Track socket reconnections
     socket.on("connect", () => {
-      console.log("Socket reconnected with new ID:", socket.id);
+      // console.log("Socket reconnected with new ID:", socket.id);
       setSocketId(socket.id);
       socketIdRef.current = socket.id;
       socketConnectedRef.current = true;
 
       // Rejoin the room if we were previously in it
       if (roomJoinedRef.current) {
-        console.log("Rejoining room after reconnection");
+        // console.log("Rejoining room after reconnection");
         socket.emit("join-room", { roomId, userId });
       }
     });
 
     socket.on("disconnect", () => {
-      console.log("Socket disconnected");
+      // console.log("Socket disconnected");
       socketConnectedRef.current = false;
     });
 
@@ -638,8 +638,8 @@ export default function VideoCallWindow({ roomId, userId, isMiniVideoCallWindow 
     const debugInterval = setInterval(() => {
       const peerCount = Object.keys(peersRef.current).length;
       if (peerCount > 0) {
-        console.log(`Total peers in room (excluding you): ${peerCount}`);
-        console.log(`Peer socket IDs: ${JSON.stringify(Object.keys(peersRef.current))}`);
+        // console.log(`Total peers in room (excluding you): ${peerCount}`);
+        // console.log(`Peer socket IDs: ${JSON.stringify(Object.keys(peersRef.current))}`);
       }
     }, 5000);
 
@@ -674,7 +674,7 @@ export default function VideoCallWindow({ roomId, userId, isMiniVideoCallWindow 
 
   // Handle leaving the call
   const leaveCall = useCallback(() => {
-    console.log("Leaving call...");
+    // console.log("Leaving call...");
 
     // Stop local tracks
     if (localStreamRef.current) {
@@ -745,7 +745,7 @@ export default function VideoCallWindow({ roomId, userId, isMiniVideoCallWindow 
                     className="w-full h-full object-cover"
                     ref={(el) => {
                       if (el && el.srcObject !== remoteStreams[id]) {
-                        console.log(`Setting srcObject for peer ${id}`);
+                        // console.log(`Setting srcObject for peer ${id}`);
                         el.srcObject = remoteStreams[id];
 
                         // Play explicitly with better error handling

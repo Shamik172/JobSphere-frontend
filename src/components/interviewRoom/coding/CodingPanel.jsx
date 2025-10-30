@@ -6,9 +6,9 @@ import SubmissionControls from "./codingComponents/SubmissionControls";
 import { useCollabSocket } from "../../../context/CollabSocketContext";
 
 const CodingPanel = ({ questionId, isPracticeSession = false, userId }) => {
-  console.log("questionId", questionId);
-  console.log("isPracticeSession", isPracticeSession);
-  console.log("userId", userId);
+  // console.log("questionId", questionId);
+  // console.log("isPracticeSession", isPracticeSession);
+  // console.log("userId", userId);
   const [language, setLanguage] = useState("javascript");
   const [question, setQuestion] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -39,7 +39,7 @@ const CodingPanel = ({ questionId, isPracticeSession = false, userId }) => {
       setPracticeCode(newCode);
       if (codeDebounceTimeout.current) clearTimeout(codeDebounceTimeout.current);
       codeDebounceTimeout.current = setTimeout(() => {
-        console.log("User typing...");
+        // console.log("User typing...");
       }, 500);
     }
     : collabContext.updateCode;
@@ -62,7 +62,7 @@ useEffect(() => {
         { questionId, userId },
         { withCredentials: true }
       );
-      console.log("ldfjf ",res)
+      // console.log("ldfjf ",res)
       setPracticeCode(res.data.final_code || "// Start coding...");
     } catch (err) {
       console.error("Error fetching session:", err);
@@ -78,7 +78,7 @@ useEffect(() => {
         { questionId, userId, final_code: practiceCodeRef.current },
         { withCredentials: true }
       );
-      console.log("Auto-saved code");
+      // console.log("Auto-saved code");
     } catch (err) {
       console.error("Error auto-saving:", err);
     }

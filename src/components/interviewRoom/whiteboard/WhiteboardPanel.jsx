@@ -21,18 +21,18 @@ export default function WhiteboardPanel() {
   }, []);
   
   // ... (the rest of your console.log and useEffect hooks remain the same)
-  console.log("🧩 WhiteboardPanel render with", sessionElements?.length || 0, "elements");
+  // console.log("🧩 WhiteboardPanel render with", sessionElements?.length || 0, "elements");
   
   useEffect(() => {
     if (sessionElements && !localElements.length) {
-      console.log("🔄 Initial sync of elements", sessionElements.length);
+      // console.log("🔄 Initial sync of elements", sessionElements.length);
       setLocalElements(sessionElements);
     }
   }, [sessionElements, localElements]);
   
   useEffect(() => {
     if (sessionElements && excalidrawAPI) {
-      console.log("📥 Received remote elements, updating scene", sessionElements.length);
+      // console.log("📥 Received remote elements, updating scene", sessionElements.length);
       excalidrawAPI.updateScene({ elements: sessionElements });
       setLocalElements(sessionElements);
     }
@@ -49,7 +49,7 @@ export default function WhiteboardPanel() {
           libraryItems: allLibraryItems, 
         }}
         onChange={(elements) => {
-          console.log("📤 Local whiteboard change", elements.length);
+          // console.log("📤 Local whiteboard change", elements.length);
           updateElements(elements);
         }}
       />

@@ -31,24 +31,24 @@ export const CollabSocketProvider = ({ children }) => {
     });
 
     newSocket.on("connect", () => {
-      console.log("✅ Socket connected. Emitting join-room...");
+      // console.log("✅ Socket connected. Emitting join-room...");
       newSocket.emit("join-room", { assessmentId, questionId, candidateId });
     });
 
     // Provider listens for ALL relevant events and updates ITS OWN state
     newSocket.on("load-initial-state", (data) => {
-      console.log("💡 Provider received initial state:", data);
+      // console.log("💡 Provider received initial state:", data);
       setSessionCode(data.code || "// Start coding here...");
       setSessionElements(data.whiteboard || []);
     });
 
     newSocket.on("code-update", (data) => {
-      console.log("Provider received code update.");
+      // console.log("Provider received code update.");
       setSessionCode(data.code);
     });
 
     newSocket.on("whiteboard-update", (data) => {
-      console.log("Provider received whiteboard update.");
+      // console.log("Provider received whiteboard update.");
       setSessionElements(data.whiteboard);
     });
     

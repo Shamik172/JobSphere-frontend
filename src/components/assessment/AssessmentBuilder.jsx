@@ -43,7 +43,7 @@ const api = {
       method: "GET",
       credentials: "include",
     });
-    console.log("res: ", response)
+    // console.log("res: ", response)
     return handleResponse(response);
   },
 
@@ -93,13 +93,13 @@ export default function AssessmentBuilder() {
 
   // --- Fetch Assessment ---
   const fetchAssessmentData = useCallback(async () => {
-    console.log("Assessment id : ", assessmentId)
+    // console.log("Assessment id : ", assessmentId)
     if (!assessmentId) return;
     setIsLoading(true);
     setError(null);
     try {
       const data = await api.getAssessmentDetails(assessmentId);
-      console.log("data in assessment : ", data)
+      // console.log("data in assessment : ", data)
       setAssessment({ name: data.name, description: data.description });
       setInterviewers(data.interviewers);
       setCandidates(data.candidates);

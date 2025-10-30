@@ -22,7 +22,7 @@ export default function VideoCallControls({
   const [camOn, setCamOn] = useState(false);
   const [permissionAsked, setPermissionAsked] = useState(false);
 
-  console.log("dljfds : ",isMiniVideoCallWindow)
+  // console.log("dljfds : ",isMiniVideoCallWindow)
   // 1. Define icon size based on the prop
   const iconSize = isMiniVideoCallWindow ? 18 : 24;
   const buttonPadding = isMiniVideoCallWindow ? "p-2" : "p-3";

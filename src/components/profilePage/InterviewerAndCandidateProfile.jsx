@@ -9,7 +9,7 @@ export default function InterviewerAndCandidateProfile() {
   const { user } = useAuth();
   const role = user?.role || "candidate";
 
-  console.log("profile page: ", user)
+  // console.log("profile page: ", user)
 
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
